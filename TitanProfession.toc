@@ -1,0 +1,9 @@
+## Interface: 60200
+## Title: Titan Panel [|cffeda55fProfession|r] |cff00aa002.0|r
+## Notes: Titan Panel plugin that shows your Profession level.
+## Author: Eliote
+## Version: 1.2
+## Dependencies: Titan
+Locales.lua
+Elib-2.2.lua
+TitanProfession.lua
