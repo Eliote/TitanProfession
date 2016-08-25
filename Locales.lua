@@ -7,6 +7,7 @@ L["thisSession"] = "Levels in this session:"
 L["tooltipLevel"] = "Current level:"
 L["tooltipMaxLevel"] = "Current Max level:"
 L["ShowMax"] = "Show max level"
+L["HideNotLearned"] = "Hide icon and text when not learned"
 
 -- Brazilian Portuguese
 if GetLocale() == "ptBR" then

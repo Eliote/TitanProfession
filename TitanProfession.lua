@@ -39,6 +39,7 @@ end
 
 local menus = {
 	{ type = "toggle", text = L["ShowMax"], var = "ShowMax", def = true },
+	--{ type = "toggle", text = L["HideNotLearned"], var = "HideNotLearned", def = true },
 	{ type = "rightSideToggle" }
 }
 
@@ -123,7 +124,12 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 			GameTooltip:AddLine(" ");
 
-			GameTooltip:AddDoubleLine(L["tooltipLevel"], GetProfLvlColor(profLevel, profMaxLevel) .. profLevel);
+			local bonusText = ""
+			if(profBonus and profBonus > 0) then
+				bonusText = Color.GREEN .. "+" .. profBonus .. "|r(" .. Color.GREEN .. profBonus + profLevel .. "|r)"
+			end
+
+			GameTooltip:AddDoubleLine(L["tooltipLevel"], GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText);
 			GameTooltip:AddDoubleLine(L["tooltipMaxLevel"], Color.WHITE .. profMaxLevel);
 
 			local dif = profLevel - startLevel
