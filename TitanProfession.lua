@@ -39,7 +39,7 @@ end
 
 local menus = {
 	{ type = "toggle", text = L["ShowMax"], var = "ShowMax", def = true },
-	--{ type = "toggle", text = L["HideNotLearned"], var = "HideNotLearned", def = true },
+	{ type = "toggle", text = L["HideNotLearned"], var = "HideNotLearned", def = true },
 	{ type = "rightSideToggle" }
 }
 
@@ -57,6 +57,9 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 	local isPrimary = profIndex <= 2
 
+	local learn = false
+
+
 	local function SetVars(name, icon, level, maxLevel, offset, bonus)
 		if profName == name and
 				profIcon == icon and
@@ -65,6 +68,13 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 				profOffset == offset and
 				profBonus == bonus
 		then
+			return
+		end
+
+		learn = name and true
+		if not learn then
+			TitanPlugins[ID].icon = nil
+			TitanPanelButton_UpdateButton(ID)
 			return
 		end
 
@@ -142,6 +152,8 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 	end
 
 	local function GetButtonText(self, id)
+		if TitanGetVar(id, "HideNotLearned") and not learn then return end
+
 		if profMaxLevel == 0 then
 			return profName .. ": ", Color.RED .. defaultDesc
 		end

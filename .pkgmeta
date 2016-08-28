@@ -2,3 +2,7 @@ package-as: TitanProfession
 
 ignore:
     - .gitignore
+
+manual-changelog:
+    filename: CHANGELOG.txt
+    markup-type: creole
