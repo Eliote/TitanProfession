@@ -2,6 +2,3 @@ package-as: TitanProfession
 
 ignore:
     - .gitignore
-
-manual-changelog: CHANGELOG.txt
-

@@ -115,17 +115,17 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 		if profMaxLevel > 0 then
 			if CanLevelUp(profLevel, profMaxLevel) then
-				GameTooltip:AddLine(L["goTrainerHint"], nil, nil, nil, true);
+				GameTooltip:AddLine("|cFFFFFFFF" .. L["goTrainerHint"], nil, nil, nil, true);
 			end
 
 			if castSkill then
-				GameTooltip:AddLine(L["tooltipHint"], nil, nil, nil, true);
+				GameTooltip:AddLine("|cFFFFFFFF" .. L["tooltipHint"], nil, nil, nil, true);
 			end
 
 			GameTooltip:AddLine(" ");
 
 			local bonusText = ""
-			if(profBonus and profBonus > 0) then
+			if (profBonus and profBonus > 0) then
 				bonusText = Color.GREEN .. "+" .. profBonus .. "|r(" .. Color.GREEN .. profBonus + profLevel .. "|r)"
 			end
 

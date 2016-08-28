@@ -1,47 +1,53 @@
 local _, L = ...;
 
-L["tooltipHint"] = "|cFFFFFFFFLeft-click opens your profession window."
-L["goTrainerHint"] = "|cFFFFFFFFHint: Find a trainer to improve your profession."
+--@localization(locale="enUS", format="lua_additive_table")@
+--@debug@
+L["tooltipHint"] = "Left-click opens your profession window."
+L["goTrainerHint"] = "Hint: Find a trainer to improve your profession."
 L["noprof"] = "Not learned"
 L["thisSession"] = "Levels in this session:"
 L["tooltipLevel"] = "Current level:"
 L["tooltipMaxLevel"] = "Current Max level:"
 L["ShowMax"] = "Show max level"
 L["HideNotLearned"] = "Hide icon and text when not learned"
+--@end-debug@
 
 -- Brazilian Portuguese
 if GetLocale() == "ptBR" then
-	L["tooltipHint"] = "|cFFFFFFFFClique para abrir a janela da profissão."
-	L["goTrainerHint"] = "|cFFFFFFFFDica: Fale com um instrutor para melhorar sua profissão."
+	--@localization(locale="ptBR", format="lua_additive_table")@
+	--@debug@
+	L["tooltipHint"] = "Clique para abrir a janela da profissão."
+	L["goTrainerHint"] = "Dica: Fale com um instrutor para melhorar sua profissão."
 	L["noprof"] = "Não aprendido"
 	L["thisSession"] = "Níveis nesta sessão:"
 	L["tooltipLevel"] = "Nível atual:"
 	L["tooltipMaxLevel"] = "Nível máximo atual:"
 	L["ShowMax"] = "Exibir nível máximo"
+	--@end-debug@
 end
 -- French
 if GetLocale() == "frFR" then
-	L["tooltipHint"] = "|cFFFF0000Help us, translation is missing!|r\r|cFFFFFFFFLeft-click opens your profession window."
+	--@localization(locale="frFR", format="lua_additive_table")@
 end
 -- German
 if GetLocale() == "deDE" then
-	L["tooltipHint"] = "|cFFFF0000Help us, translation is missing!|r\r|cFFFFFFFFLeft-click opens your profession window."
+	--@localization(locale="deDE", format="lua_additive_table")@
 end
 -- Italian
 if GetLocale() == "itIT" then
-	L["tooltipHint"] = "|cFFFF0000Help us, translation is missing!|r\r|cFFFFFFFFLeft-click opens your profession window."
+	--@localization(locale="itIT", format="lua_additive_table")@
 end
 -- Latin American Spanish
 if GetLocale() == "esMX" then
-	L["tooltipHint"] = "|cFFFF0000Help us, translation is missing!|r\r|cFFFFFFFFLeft-click opens your profession window."
+	--@localization(locale="esMX", format="lua_additive_table")@
 end
 -- Russian
 if GetLocale() == "ruRU" then
-	L["tooltipHint"] = "|cFFFF0000Help us, translation is missing!|r\r|cFFFFFFFFLeft-click opens your profession window."
+	--@localization(locale="ruRU", format="lua_additive_table")@
 end
 -- Spanish
 if GetLocale() == "esES" then
-	L["tooltipHint"] = "|cFFFF0000Help us, translation is missing!|r\r|cFFFFFFFFLeft-click opens your profession window."
+	--@localization(locale="esES", format="lua_additive_table")@
 end
 
 
