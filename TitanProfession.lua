@@ -7,7 +7,7 @@
 local ADDON_NAME, L = ...;
 local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 
-local PROFESSION_LEVEL_LIMIT = 700
+local PROFESSION_LEVEL_LIMIT = 800
 local PANDAREM_LIMIT = 600
 
 local Color = {}
