@@ -102,6 +102,9 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 	end
 
 	local function ReloadProf()
+        -- ignore while TitanPlugins is not registered
+        if(TitanPlugins == nil) then return end
+
 		local prof = select(profIndex, GetProfessions())
 		if not prof then return SetVars() end
 
@@ -110,15 +113,6 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 		return level
 	end
-
-	local eventsTable = {
-		PLAYER_ENTERING_WORLD = function(self)
-			self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-			self.PLAYER_ENTERING_WORLD = nil
-
-			startLevel = ReloadProf() or 0
-		end
-	}
 
 	local function CreateToolTip()
 		GameTooltip:SetText(profName, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
@@ -185,9 +179,7 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 		category = "Profession",
 		version = VERSION,
 		getButtonText = GetButtonText,
-		--getTooltipText = GetTooltipText,
 		onClick = OnClick,
-		eventsTable = eventsTable,
 		onUpdate = ReloadProf,
 		customTooltip = CreateToolTip,
 		menus = menus
