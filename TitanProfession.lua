@@ -162,7 +162,13 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 		local maxText = (TitanGetVar(id, "ShowMax") and ("|r/" .. Color.RED .. profMaxLevel)) or ""
 
-		return profName .. ": ", GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText1 .. maxText .. "|r"
+        local session = ""
+        local dif = profLevel - startLevel
+        if dif > 0 then
+            session = Color.GREEN .. " [" .. dif .. Color.GREEN .. "]"
+        end
+
+		return profName .. ": ", GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText1 .. maxText .. session .. "|r"
 	end
 
 	local function OnClick(self, button)
