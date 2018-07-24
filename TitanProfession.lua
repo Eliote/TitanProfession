@@ -53,7 +53,7 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 	local profBonus = 0
 	local profOffset = 0
 
-	local startLevel = 0
+	local startLevel
 
 	local isPrimary = profIndex <= 2
 
@@ -76,7 +76,11 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 			TitanPlugins[ID].icon = nil
 			TitanPanelButton_UpdateButton(ID)
 			return
-		end
+        end
+
+        if(startLevel == nil) then
+            startLevel = level
+        end
 
 		profOffset = offset or 0
 		profIcon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
@@ -110,8 +114,6 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 		local name, icon, level, maxLevel, _, offset, _, skillModifier = GetProfessionInfo(prof)
 		SetVars(name, icon, level, maxLevel, offset, skillModifier)
-
-		return level
 	end
 
 	local function CreateToolTip()
