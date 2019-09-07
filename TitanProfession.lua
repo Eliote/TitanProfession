@@ -7,8 +7,12 @@
 local ADDON_NAME, L = ...;
 local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 
-local PROFESSION_LEVEL_LIMIT = 800
-local PANDAREM_LIMIT = 600
+local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfessionClassic", "AceEvent-3.0")
+
+local Elib = LibStub("Elib-3.0")
+local LibAddonCompat = LibStub("LibAddonCompat")
+
+local PROFESSION_LEVEL_LIMIT = 300
 
 local Color = {}
 Color.WHITE = "|cFFFFFFFF"
@@ -16,11 +20,9 @@ Color.RED = "|cFFDC2924"
 Color.YELLOW = "|cFFFFF244"
 Color.GREEN = "|cFF3DDC53"
 
-
 local function CanLevelUp(profLvl, profMaxLvl)
 	if profMaxLvl == 0 then return end
 	if profMaxLvl == PROFESSION_LEVEL_LIMIT then return end
-	if profMaxLvl == PANDAREM_LIMIT then return end -- need test
 
 	if profLvl > (profMaxLvl - 25) then return true end
 end
@@ -43,8 +45,8 @@ local menus = {
 	{ type = "rightSideToggle" }
 }
 
-local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint)
-	local ID = idPrefix .. profIndex
+local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
+	local ID = titanId
 
 	local profName = defaultDesc
 	local profIcon = ""
@@ -59,28 +61,12 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 	local learn = false
 
-
 	local function SetVars(name, icon, level, maxLevel, offset, bonus)
-		if profName == name and
-				profIcon == icon and
-				profLevel == level and
-				profMaxLevel == maxLevel and
-				profOffset == offset and
-				profBonus == bonus
-		then
-			return
-		end
-
 		learn = name and true
-		if not learn then
-			TitanPlugins[ID].icon = nil
-			TitanPanelButton_UpdateButton(ID)
-			return
-        end
 
-        if(startLevel == nil) then
-            startLevel = level
-        end
+		if (startLevel == nil) then
+			startLevel = level
+		end
 
 		profOffset = offset or 0
 		profIcon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
@@ -106,13 +92,13 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 	end
 
 	local function ReloadProf()
-        -- ignore while TitanPlugins is not registered
-        if(TitanPlugins == nil) then return end
+		-- ignore while TitanPlugins is not registered
+		if (TitanPlugins == nil) then return end
 
-		local prof = select(profIndex, GetProfessions())
+		local prof = select(profIndex, LibAddonCompat:GetProfessions())
 		if not prof then return SetVars() end
 
-		local name, icon, level, maxLevel, _, offset, _, skillModifier = GetProfessionInfo(prof)
+		local name, icon, level, maxLevel, _, offset, _, skillModifier = LibAddonCompat:GetProfessionInfo(prof)
 		SetVars(name, icon, level, maxLevel, offset, skillModifier)
 	end
 
@@ -162,24 +148,25 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 		local maxText = (TitanGetVar(id, "ShowMax") and ("|r/" .. Color.RED .. profMaxLevel)) or ""
 
-        local session = ""
-        local dif = profLevel - startLevel
-        if dif > 0 then
-            session = Color.GREEN .. " [" .. dif .. Color.GREEN .. "]"
-        end
+		local session = ""
+		local dif = profLevel - startLevel
+		if dif > 0 then
+			session = Color.GREEN .. " [" .. dif .. Color.GREEN .. "]"
+		end
 
 		return profName .. ": ", GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText1 .. maxText .. session .. "|r"
 	end
 
 	local function OnClick(self, button)
 		if (button == "LeftButton") then
+			print(profOffset)
 			if profOffset > 0 and castSkill then
 				CastSpell(profOffset + castSkill, "Spell")
 			end
 		end
 	end
 
-	L.Elib({
+	Elib.Register({
 		id = ID,
 		name = defaultDesc .. "|r",
 		tooltip = L["noprof"],
@@ -194,9 +181,10 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 	})
 end
 
-TitanProf("TITAN_PROF_", 1, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
-TitanProf("TITAN_PROF_", 2, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
-TitanProf("TITAN_PROF_", 3, 1, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- archaeology
-TitanProf("TITAN_PROF_", 4, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
-TitanProf("TITAN_PROF_", 5, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
-
+function TitanProfession:OnInitialize()
+	TitanProf("TITAN_PROF_1", 1, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
+	TitanProf("TITAN_PROF_2", 2, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
+	TitanProf("TITAN_PROF_3", 3, 1, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- archaeology
+	TitanProf("TITAN_PROF_4", 4, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
+	TitanProf("TITAN_PROF_5", 5, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
+end
