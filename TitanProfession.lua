@@ -159,7 +159,6 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 
 	local function OnClick(self, button)
 		if (button == "LeftButton") then
-			print(profOffset)
 			if profOffset > 0 and castSkill then
 				CastSpell(profOffset + castSkill, "Spell")
 			end
@@ -184,7 +183,7 @@ end
 function TitanProfession:OnInitialize()
 	TitanProf("TITAN_PROF_1", 1, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
 	TitanProf("TITAN_PROF_2", 2, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
-	TitanProf("TITAN_PROF_3", 3, 1, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- archaeology
-	TitanProf("TITAN_PROF_4", 4, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
-	TitanProf("TITAN_PROF_5", 5, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
+	TitanProf("TITAN_PROF_5", 3, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
+	TitanProf("TITAN_PROF_3", 4, 1, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID) -- first aid
+	TitanProf("TITAN_PROF_4", 5, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
 end
