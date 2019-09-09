@@ -10,7 +10,8 @@ local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfessionClassic", "AceEvent-3.0")
 
 local Elib = LibStub("Elib-3.0")
-local LibAddonCompat = LibStub("LibAddonCompat")
+---@type LibAddonCompat
+local LAC = LibStub("LibAddonCompat-1.0")
 
 local PROFESSION_LEVEL_LIMIT = 300
 
@@ -95,10 +96,10 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 		-- ignore while TitanPlugins is not registered
 		if (TitanPlugins == nil) then return end
 
-		local prof = select(profIndex, LibAddonCompat:GetProfessions())
+		local prof = select(profIndex, LAC:GetProfessions())
 		if not prof then return SetVars() end
 
-		local name, icon, level, maxLevel, _, offset, _, skillModifier = LibAddonCompat:GetProfessionInfo(prof)
+		local name, icon, level, maxLevel, _, offset, _, skillModifier = LAC:GetProfessionInfo(prof)
 		SetVars(name, icon, level, maxLevel, offset, skillModifier)
 	end
 
@@ -181,9 +182,9 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 end
 
 function TitanProfession:OnInitialize()
-	TitanProf("TITAN_PROF_1", 1, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
-	TitanProf("TITAN_PROF_2", 2, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
-	TitanProf("TITAN_PROF_5", 3, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
-	TitanProf("TITAN_PROF_3", 4, 1, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID) -- first aid
-	TitanProf("TITAN_PROF_4", 5, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
+	TitanProf("TITAN_PROF_1", LAC.PROFESSION_FIRST_INDEX, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
+	TitanProf("TITAN_PROF_2", LAC.PROFESSION_SECOND_INDEX, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
+	TitanProf("TITAN_PROF_3", LAC.PROFESSION_FIRST_AID_INDEX, 1, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID) -- first aid
+	TitanProf("TITAN_PROF_4", LAC.PROFESSION_FISHING_INDEX, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
+	TitanProf("TITAN_PROF_5", LAC.PROFESSION_COOKING_INDEX, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
 end

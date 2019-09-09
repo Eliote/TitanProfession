@@ -5,6 +5,6 @@
 ## Version: @project-version@
 ## Dependencies: TitanClassic
 Locales.lua
-Lib\LibAddonCompat\LibAddonCompat.xml
+Lib\LibAddonCompat-1.0\LibAddonCompat-1.0.xml
 Elib-3.0.lua
 TitanProfession.lua

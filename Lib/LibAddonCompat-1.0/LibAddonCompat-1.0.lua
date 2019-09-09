@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat", 1
+local MAJOR, MINOR = "LibAddonCompat-1.0", 1
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -6,6 +6,12 @@ if not LibAddonCompat then return end
 local GetNumSkillLines, GetSkillLineInfo = GetNumSkillLines, GetSkillLineInfo
 local FindSpellBookSlotBySpellID, GetSpellBookItemTexture = FindSpellBookSlotBySpellID, GetSpellBookItemTexture
 local PROFESSIONS_COOKING, PROFESSIONS_FIRST_AID, PROFESSIONS_FISHING = PROFESSIONS_COOKING, PROFESSIONS_FIRST_AID, PROFESSIONS_FISHING
+
+LibAddonCompat.PROFESSION_FIRST_INDEX = 1
+LibAddonCompat.PROFESSION_SECOND_INDEX = 2
+LibAddonCompat.PROFESSION_FISHING_INDEX = 4
+LibAddonCompat.PROFESSION_COOKING_INDEX = 5
+LibAddonCompat.PROFESSION_FIRST_AID_INDEX = 6
 
 function LibAddonCompat:GetProfessions()
 	local professions = {
@@ -41,7 +47,8 @@ function LibAddonCompat:GetProfessions()
 		end
 	end
 
-	return professions.first, professions.second, professions.cooking, professions.first_aid, professions.fishing
+	-- original: prof1, prof2, archaeology, fishing, cooking, firstAid = GetProfessions()
+	return professions.first, professions.second, nil, professions.fishing, professions.cooking, professions.first_aid
 end
 
 local function FindSpellBookSlotBySpellIDs(t)
