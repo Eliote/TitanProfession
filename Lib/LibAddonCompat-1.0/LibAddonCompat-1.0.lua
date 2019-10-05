@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 1
+local MAJOR, MINOR = "LibAddonCompat-1.0", 2
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -66,6 +66,9 @@ local function findSpellTexture(skillName)
 	local texture = GetSpellBookItemTexture(skillName)
 	if texture then return tostring(texture) end
 
+	-- find herbs
+	if (FindSpellBookSlotBySpellID(2383)) then return "136065" end
+
 	-- smiting
 	if (FindSpellBookSlotBySpellID(2656)) then return "136248" end
 end
@@ -88,7 +91,7 @@ local professionInfoTable = {
 	-- Alchemy
 	["136240"] = { numAbilities = 1, spellIds = { 2259, 3101, 3464, 11611 }, skillLine = 171 },
 	-- Herbalism
-	["136246"] = { numAbilities = 1, spellIds = { }, skillLine = 182 },
+	["136065"] = { numAbilities = 1, spellIds = { }, skillLine = 182 },
 	-- Mining
 	["136248"] = { numAbilities = 2, spellIds = { 2656 }, skillLine = 186 },
 	-- Engineering
