@@ -73,6 +73,12 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 
 		learn = name and true
 		if not learn then
+			profName = defaultDesc
+			profIcon = ""
+			profLevel = 0
+			profMaxLevel = 0
+			profBonus = 0
+			profOffset = 0
 			TitanPlugins[ID].icon = nil
 			TitanPanelButton_UpdateButton(ID)
 			return
