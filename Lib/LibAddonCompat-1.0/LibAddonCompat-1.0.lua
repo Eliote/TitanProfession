@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 3
+local MAJOR, MINOR = "LibAddonCompat-1.0", 4
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -245,7 +245,6 @@ local tmp = {}
 for k, v in pairs(professionsLocale) do
 	tmp[k] = v
 	tmp[string.lower(k)] = v
-	print(k .. " -- " .. string.lower(k))
 end
 
 professionsLocale = tmp
