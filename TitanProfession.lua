@@ -54,7 +54,7 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 	local profLevel = 0
 	local profMaxLevel = 0
 	local profBonus = 0
-	local profOffset = 0
+	local profOffset
 
 	local startLevel
 
@@ -69,7 +69,7 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 			startLevel = level
 		end
 
-		profOffset = offset or 0
+		profOffset = offset
 		profIcon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
 		profName = name or defaultDesc
 		profLevel = level or 0
@@ -160,7 +160,7 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 
 	local function OnClick(self, button)
 		if (button == "LeftButton") then
-			if profOffset > 0 and castSkill then
+			if profOffset and castSkill then
 				CastSpell(profOffset + castSkill, "Spell")
 			end
 		end
