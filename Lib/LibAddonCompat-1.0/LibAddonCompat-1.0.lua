@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 4
+local MAJOR, MINOR = "LibAddonCompat-1.0", 5
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -17,7 +17,7 @@ local TEXTURE_COOKING = "133971"
 local TEXTURE_FIRST_AID = "135966"
 local TEXTURE_FISHING = "136245"
 local TEXTURE_BLACKSMITHING = "136241"
-local TEXTURE_LEATHERWORKING = "136247"
+local TEXTURE_LEATHERWORKING = "133611"
 local TEXTURE_ALCHEMY = "136240"
 local TEXTURE_HERBALISM = "136065"
 local TEXTURE_MINING = "136248"
@@ -100,7 +100,7 @@ end
 local professionInfoTable = {
 	[TEXTURE_FIRST_AID] = { numAbilities = 1, spellIds = { 3273, 3274, 7924, 10846 }, skillLine = 129 },
 	[TEXTURE_BLACKSMITHING] = { numAbilities = 1, spellIds = { 2018, 3100, 3538, 9785 }, skillLine = 164 },
-	[TEXTURE_LEATHERWORKING] = { numAbilities = 1, spellIds = { 8613, 8617, 8618, 10768 }, skillLine = 165 },
+	[TEXTURE_LEATHERWORKING] = { numAbilities = 1, spellIds = { 2108, 3104, 3811 }, skillLine = 165 },
 	[TEXTURE_ALCHEMY] = { numAbilities = 1, spellIds = { 2259, 3101, 3464, 11611 }, skillLine = 171 },
 	[TEXTURE_HERBALISM] = { numAbilities = 1, spellIds = { }, skillLine = 182 },
 	[TEXTURE_MINING] = { numAbilities = 2, spellIds = { 2656 }, skillLine = 186 },
