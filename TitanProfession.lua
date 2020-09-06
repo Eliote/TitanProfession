@@ -7,6 +7,8 @@
 local ADDON_NAME, L = ...;
 local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 
+local Elib = LibStub("Elib-4.0")
+
 local PROFESSION_LEVEL_LIMIT = 800
 local PANDAREM_LIMIT = 600
 
@@ -185,7 +187,7 @@ local function TitanProf(idPrefix, profIndex, castSkill, defaultDesc, noProfHint
 		end
 	end
 
-	L.Elib({
+	Elib.Register({
 		id = ID,
 		name = defaultDesc .. "|r",
 		tooltip = L["noprof"],
