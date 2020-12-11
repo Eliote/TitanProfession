@@ -3,7 +3,7 @@
 	Author: Eliote
 --]]
 
-local MAJOR, MINOR = "Elib-4.0", 1
+local MAJOR, MINOR = "Elib-4.0", 4
 local Elib = LibStub:NewLibrary(MAJOR, MINOR)
 if not Elib then return end
 
@@ -26,7 +26,7 @@ local function createTitanOption(id, text, var)
 end
 
 local function setDefaultSavedVariables(sv, menus)
-	sv.ShowIcon = sv.ShowIcon or 1
+	if sv.ShowIcon == nil then sv.ShowIcon = 1 end
 	sv.ShowLabelText = sv.ShowLabelText or false
 
 	if menus then
@@ -34,6 +34,55 @@ local function setDefaultSavedVariables(sv, menus)
 			if v.var then sv[v.var] = v.def or sv[v.var] or false
 			elseif v.type == "rightSideToggle" then sv.DisplayOnRightSide = v.def or false
 			end
+		end
+	end
+end
+
+local function initMenu(self, level, menuList, id)
+	for k, v in ipairs(menuList) do
+		local info = {}
+		info.text = v.text
+		info.arg1 = v.arg1
+		info.arg2 = v.arg2
+		info.notCheckable = true
+		info.func = v.func
+
+		if v.menuList then
+			info.hasArrow = true
+			info.menuList = v.menuList
+		end
+
+		if v.type == "toggle" then
+			info.notCheckable = false
+			info.func = v.func or function()
+				TitanToggleVar(id, v.var);
+				TitanPanelButton_UpdateButton(id)
+			end
+			info.checked = TitanGetVar(id, v.var)
+			info.keepShownOnClick = v.keepShown
+			EDDM.UIDropDownMenu_AddButton(info, level)
+		elseif v.type == "space" then
+			EDDM.UIDropDownMenu_AddSpace(level)
+		elseif v.type == "button" then
+			EDDM.UIDropDownMenu_AddButton(info, level)
+		elseif v.type == "title" then
+			info.isTitle = true
+			EDDM.UIDropDownMenu_AddButton(info, level)
+		elseif v.type == "color" then
+			local colorHex = TitanGetVar(id, v.var) or v.def or "FF000000"
+			info.r, info.g, info.b = CreateColorFromHexString(colorHex):GetRGB()
+			info.swatchFunc = v.swatchFunc or function()
+				local color = CreateColor(ColorPickerFrame:GetColorRGB())
+				TitanSetVar(id, v.var, color:GenerateHexColor())
+				TitanPanelButton_UpdateButton(id)
+			end
+			info.cancelFunc = v.cancelFunc or function(previousValues)
+				if previousValues then
+					TitanSetVar(id, v.var, CreateColor(previousValues.r, previousValues.g, previousValues.b):GenerateHexColor())
+				end
+			end
+			info.hasColorSwatch = true
+			EDDM.UIDropDownMenu_AddButton(info, level)
 		end
 	end
 end
@@ -46,6 +95,10 @@ function Elib.Register(easyObject)
 			return easyObject.prepareMenu(EDDM, self, easyObject.id, level, menuList)
 		end
 
+		if level and level > 1 then
+			return initMenu(self, level, menuList, id)
+		end
+
 		EDDM.UIDropDownMenu_AddButton({
 			text = TitanPlugins[id].menuText,
 			hasArrow = false,
@@ -56,36 +109,27 @@ function Elib.Register(easyObject)
 
 		EDDM.UIDropDownMenu_AddButton(createTitanOption(id, Titan_L["TITAN_PANEL_MENU_SHOW_ICON"], "ShowIcon"))
 		EDDM.UIDropDownMenu_AddButton(createTitanOption(id, Titan_L["TITAN_PANEL_MENU_SHOW_LABEL_TEXT"], "ShowLabelText"))
-		EDDM.UIDropDownMenu_AddSeparator()
 
 		local menus = easyObject.menus
 		if menus then
 			for k, v in ipairs(menus) do
-				if v.type == "toggle" then
-					local info = {}
-					info.text = v.text
-					info.func = v.func or function() TitanToggleVar(id, v.var); TitanPanelButton_UpdateButton(id) end
-					info.checked = TitanGetVar(id, v.var)
-					info.keepShownOnClick = v.keepShown
-					EDDM.UIDropDownMenu_AddButton(info)
-				elseif v.type == "rightSideToggle" then
+				if v.type == "rightSideToggle" then
 					local info = {}
 					info.text = Titan_L["TITAN_CLOCK_MENU_DISPLAY_ON_RIGHT_SIDE"]
-					info.func = function() TitanToggleVar(id, "DisplayOnRightSide"); TitanPanel_InitPanelButtons() end
+					info.func = function()
+						TitanToggleVar(id, "DisplayOnRightSide");
+						TitanPanel_InitPanelButtons()
+					end
 					info.checked = TitanGetVar(id, "DisplayOnRightSide")
-					EDDM.UIDropDownMenu_AddButton(info)
-				elseif v.type == "space" then
-					EDDM.UIDropDownMenu_AddSpace()
-				elseif v.type == "button" then
-					local info = {}
-					info.text = v.text
-					info.func = v.func
-					info.notCheckable = true
-					info.arg1 = v.arg1
-					info.arg2 = v.arg2
 					EDDM.UIDropDownMenu_AddButton(info)
 				end
 			end
+		end
+
+		EDDM.UIDropDownMenu_AddSeparator()
+
+		if menus then
+			initMenu(self, level, menus, id)
 			EDDM.UIDropDownMenu_AddButton({ text = "", notCheckable = true, notClickable = true, disabled = 1 })
 		end
 
