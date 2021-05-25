@@ -9,11 +9,11 @@ local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 
 local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfessionClassic", "AceEvent-3.0")
 
-local Elib = LibStub("Elib-3.0")
+local Elib = LibStub("Elib-4.0")
 ---@type LibAddonCompat
 local LAC = LibStub("LibAddonCompat-1.0")
 
-local PROFESSION_LEVEL_LIMIT = 300
+local PROFESSION_LEVEL_LIMIT = 375
 
 local Color = {}
 Color.WHITE = "|cFFFFFFFF"

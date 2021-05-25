@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 7
+local MAJOR, MINOR = "LibAddonCompat-1.0", 9
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -47,7 +47,7 @@ function LibAddonCompat:GetProfessions()
 		skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
 		skillDescription = GetSkillLineInfo(skillIndex)
 
-		if not isHeader then
+		if skillName and not isHeader then
 			if isAbandonable then
 				-- primary
 				if not professions.first then
@@ -111,7 +111,7 @@ local professionInfoTable = {
 	[TEXTURE_COOKING] = { numAbilities = 1, spellIds = { 2550, 3102, 3413, 18260, 33359 }, skillLine = 185 },
 	[TEXTURE_TAILORING] = { numAbilities = 1, spellIds = { 3908, 3909, 3910, 12180, 26790 }, skillLine = 197 },
 	[TEXTURE_SKINNING] = { numAbilities = 1, spellIds = { }, skillLine = 393 },
-	[TEXTURE_JEWELCRAFTING] = { numAbilities = 1, spellIds = { 25229, 25230, 28894, 28895, 28897 }, skillLine = 755 },
+	[TEXTURE_JEWELCRAFTING] = { numAbilities = 2, spellIds = { 25229, 25230, 28894, 28895, 28897 }, skillLine = 755 },
 }
 
 function LibAddonCompat:GetProfessionInfo(skillIndex)
