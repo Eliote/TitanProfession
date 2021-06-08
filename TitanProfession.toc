@@ -5,6 +5,7 @@
 ## Version: @project-version@
 ## Dependencies: TitanClassic
 Locales.lua
+Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\LibAddonCompat-1.0\LibAddonCompat-1.0.xml
 Libs\ElioteDropDownMenu-1.0\ElioteDropDownMenu-1.0.lua
 Libs\Elib-4.0\Elib-4.0.lua
