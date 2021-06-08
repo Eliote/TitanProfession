@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 9
+local MAJOR, MINOR = "LibAddonCompat-1.0", 10
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -25,7 +25,7 @@ local TEXTURE_ENGINEERING = "136243"
 local TEXTURE_ENCHANTING = "136244"
 local TEXTURE_TAILORING = "136249"
 local TEXTURE_SKINNING = "134366"
-local TEXTURE_JEWELCRAFTING = "134071"
+local TEXTURE_JEWELCRAFTING = { "134071", "134072" }
 
 local professionsLocale = {
 	[PROFESSIONS_COOKING] = TEXTURE_COOKING,
@@ -98,21 +98,32 @@ end
 ---@field skillLine number
 
 ---@type table<string, ProfInfo>
-local professionInfoTable = {
-	[TEXTURE_FIRST_AID] = { numAbilities = 1, spellIds = { 3273, 3274, 7924, 10846, 27028 }, skillLine = 129 },
-	[TEXTURE_BLACKSMITHING] = { numAbilities = 1, spellIds = { 2018, 3100, 3538, 9785, 29844 }, skillLine = 164 },
-	[TEXTURE_LEATHERWORKING] = { numAbilities = 1, spellIds = { 2108, 3104, 3811, 10662, 32549 }, skillLine = 165 },
-	[TEXTURE_ALCHEMY] = { numAbilities = 1, spellIds = { 2259, 3101, 3464, 11611, 28596 }, skillLine = 171 },
-	[TEXTURE_HERBALISM] = { numAbilities = 1, spellIds = { }, skillLine = 182 },
-	[TEXTURE_MINING] = { numAbilities = 2, spellIds = { 2656 }, skillLine = 186 },
-	[TEXTURE_ENGINEERING] = { numAbilities = 1, spellIds = { 4036, 4037, 4038, 12656, 30350 }, skillLine = 202 },
-	[TEXTURE_ENCHANTING] = { numAbilities = 1, spellIds = { 7411, 7412, 7413, 13920, 28029 }, skillLine = 333 },
-	[TEXTURE_FISHING] = { numAbilities = 1, spellIds = { }, skillLine = 356 },
-	[TEXTURE_COOKING] = { numAbilities = 1, spellIds = { 2550, 3102, 3413, 18260, 33359 }, skillLine = 185 },
-	[TEXTURE_TAILORING] = { numAbilities = 1, spellIds = { 3908, 3909, 3910, 12180, 26790 }, skillLine = 197 },
-	[TEXTURE_SKINNING] = { numAbilities = 1, spellIds = { }, skillLine = 393 },
-	[TEXTURE_JEWELCRAFTING] = { numAbilities = 2, spellIds = { 25229, 25230, 28894, 28895, 28897 }, skillLine = 755 },
-}
+local professionInfoTable = {}
+setmetatable(professionInfoTable, {
+	__newindex = function(t, k, v)
+		if type(k) == "table" then
+			for _, texture in ipairs(k) do
+				professionInfoTable[texture] = v
+			end
+		else
+			rawset(t, k, v)
+		end
+	end
+})
+
+professionInfoTable[TEXTURE_FIRST_AID] = { numAbilities = 1, spellIds = { 3273, 3274, 7924, 10846, 27028 }, skillLine = 129 }
+professionInfoTable[TEXTURE_BLACKSMITHING] = { numAbilities = 1, spellIds = { 2018, 3100, 3538, 9785, 29844 }, skillLine = 164 }
+professionInfoTable[TEXTURE_LEATHERWORKING] = { numAbilities = 1, spellIds = { 2108, 3104, 3811, 10662, 32549 }, skillLine = 165 }
+professionInfoTable[TEXTURE_ALCHEMY] = { numAbilities = 1, spellIds = { 2259, 3101, 3464, 11611, 28596 }, skillLine = 171 }
+professionInfoTable[TEXTURE_HERBALISM] = { numAbilities = 1, spellIds = { }, skillLine = 182 }
+professionInfoTable[TEXTURE_MINING] = { numAbilities = 2, spellIds = { 2656 }, skillLine = 186 }
+professionInfoTable[TEXTURE_ENGINEERING] = { numAbilities = 1, spellIds = { 4036, 4037, 4038, 12656, 30350 }, skillLine = 202 }
+professionInfoTable[TEXTURE_ENCHANTING] = { numAbilities = 1, spellIds = { 7411, 7412, 7413, 13920, 28029 }, skillLine = 333 }
+professionInfoTable[TEXTURE_FISHING] = { numAbilities = 1, spellIds = { }, skillLine = 356 }
+professionInfoTable[TEXTURE_COOKING] = { numAbilities = 1, spellIds = { 2550, 3102, 3413, 18260, 33359 }, skillLine = 185 }
+professionInfoTable[TEXTURE_TAILORING] = { numAbilities = 1, spellIds = { 3908, 3909, 3910, 12180, 26790 }, skillLine = 197 }
+professionInfoTable[TEXTURE_SKINNING] = { numAbilities = 1, spellIds = { }, skillLine = 393 }
+professionInfoTable[TEXTURE_JEWELCRAFTING] = { numAbilities = 2, spellIds = { 25229, 25230, 28894, 28895, 28897 }, skillLine = 755 }
 
 function LibAddonCompat:GetProfessionInfo(skillIndex)
 	local skillName, isHeader, isExpanded, skillRank, numTempPoints, skillModifier,
@@ -256,6 +267,9 @@ end
 
 local tmp = {}
 for k, v in pairs(professionsLocale) do
+	if type(v) == "table" then
+		v = v[1] -- just pick the first value for now.
+	end
 	tmp[k] = v
 	tmp[string.lower(k)] = v
 end
