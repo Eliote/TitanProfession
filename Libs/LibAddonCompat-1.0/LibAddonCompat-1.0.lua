@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 10
+local MAJOR, MINOR = "LibAddonCompat-1.0", 11
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -201,7 +201,7 @@ elseif locale == "koKR" then
 	professionsLocale["대장기술"] = TEXTURE_BLACKSMITHING
 	professionsLocale["가죽세공"] = TEXTURE_LEATHERWORKING
 	professionsLocale["연금술"] = TEXTURE_ALCHEMY
-	professionsLocale["약초채집"] = TEXTURE_HERBALISM
+	professionsLocale["약초 채집"] = TEXTURE_HERBALISM
 	professionsLocale["채광"] = TEXTURE_MINING
 	professionsLocale["기계공학"] = TEXTURE_ENGINEERING
 	professionsLocale["마법부여"] = TEXTURE_ENCHANTING
