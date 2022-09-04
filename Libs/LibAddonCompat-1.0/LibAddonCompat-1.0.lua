@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 11
+local MAJOR, MINOR = "LibAddonCompat-1.0", 12
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -26,12 +26,17 @@ local TEXTURE_ENCHANTING = "136244"
 local TEXTURE_TAILORING = "136249"
 local TEXTURE_SKINNING = "134366"
 local TEXTURE_JEWELCRAFTING = { "134071", "134072" }
+local TEXTURE_INSCRIPTION = "237171"
 
 local professionsLocale = {
 	[PROFESSIONS_COOKING] = TEXTURE_COOKING,
 	[PROFESSIONS_FIRST_AID] = TEXTURE_FIRST_AID,
 	[PROFESSIONS_FISHING] = TEXTURE_FISHING
 }
+
+if INSCRIPTION then
+	professionsLocale[INSCRIPTION] = TEXTURE_INSCRIPTION
+end
 
 function LibAddonCompat:GetProfessions()
 	local professions = {
@@ -111,19 +116,20 @@ setmetatable(professionInfoTable, {
 	end
 })
 
-professionInfoTable[TEXTURE_FIRST_AID] = { numAbilities = 1, spellIds = { 3273, 3274, 7924, 10846, 27028 }, skillLine = 129 }
-professionInfoTable[TEXTURE_BLACKSMITHING] = { numAbilities = 1, spellIds = { 2018, 3100, 3538, 9785, 29844 }, skillLine = 164 }
-professionInfoTable[TEXTURE_LEATHERWORKING] = { numAbilities = 1, spellIds = { 2108, 3104, 3811, 10662, 32549 }, skillLine = 165 }
-professionInfoTable[TEXTURE_ALCHEMY] = { numAbilities = 1, spellIds = { 2259, 3101, 3464, 11611, 28596 }, skillLine = 171 }
+professionInfoTable[TEXTURE_FIRST_AID] = { numAbilities = 1, spellIds = { 3273, 3274, 7924, 10846, 27028, 45542, 74559, 110406, 158741, 195113 }, skillLine = 129 }
+professionInfoTable[TEXTURE_BLACKSMITHING] = { numAbilities = 1, spellIds = { 2018, 3100, 3538, 9785, 29844, 51300, 76666, 110396, 158737, 195097 }, skillLine = 164 }
+professionInfoTable[TEXTURE_LEATHERWORKING] = { numAbilities = 1, spellIds = { 2108, 3104, 3811, 10662, 32549, 51302, 81199, 110423, 158752, 195119 }, skillLine = 165 }
+professionInfoTable[TEXTURE_ALCHEMY] = { numAbilities = 1, spellIds = { 2259, 3101, 3464, 11611, 28596, 51304, 80731, 105206 }, skillLine = 171 }
 professionInfoTable[TEXTURE_HERBALISM] = { numAbilities = 1, spellIds = { }, skillLine = 182 }
 professionInfoTable[TEXTURE_MINING] = { numAbilities = 2, spellIds = { 2656 }, skillLine = 186 }
-professionInfoTable[TEXTURE_ENGINEERING] = { numAbilities = 1, spellIds = { 4036, 4037, 4038, 12656, 30350 }, skillLine = 202 }
-professionInfoTable[TEXTURE_ENCHANTING] = { numAbilities = 1, spellIds = { 7411, 7412, 7413, 13920, 28029 }, skillLine = 333 }
+professionInfoTable[TEXTURE_ENGINEERING] = { numAbilities = 1, spellIds = { 4036, 4037, 4038, 12656, 30350, 51306, 82774, 110403, 158739, 195112 }, skillLine = 202 }
+professionInfoTable[TEXTURE_ENCHANTING] = { numAbilities = 1, spellIds = { 7411, 7412, 7413, 13920, 28029, 51313, 74258, 110400, 158716, 195096 }, skillLine = 333 }
 professionInfoTable[TEXTURE_FISHING] = { numAbilities = 1, spellIds = { }, skillLine = 356 }
-professionInfoTable[TEXTURE_COOKING] = { numAbilities = 1, spellIds = { 2550, 3102, 3413, 18260, 33359 }, skillLine = 185 }
-professionInfoTable[TEXTURE_TAILORING] = { numAbilities = 1, spellIds = { 3908, 3909, 3910, 12180, 26790 }, skillLine = 197 }
+professionInfoTable[TEXTURE_COOKING] = { numAbilities = 1, spellIds = { 2550, 3102, 3413, 18260, 33359, 51296, 88053, 104381, 158765, 195128 }, skillLine = 185 }
+professionInfoTable[TEXTURE_TAILORING] = { numAbilities = 1, spellIds = { 3908, 3909, 3910, 12180, 26790, 51309, 75156, 110426, 158758, 195126 }, skillLine = 197 }
 professionInfoTable[TEXTURE_SKINNING] = { numAbilities = 1, spellIds = { }, skillLine = 393 }
-professionInfoTable[TEXTURE_JEWELCRAFTING] = { numAbilities = 2, spellIds = { 25229, 25230, 28894, 28895, 28897 }, skillLine = 755 }
+professionInfoTable[TEXTURE_JEWELCRAFTING] = { numAbilities = 2, spellIds = { 25229, 25230, 28894, 28895, 28897, 51311, 73318, 110420, 158750, 195116 }, skillLine = 755 }
+professionInfoTable[TEXTURE_INSCRIPTION] = { numAbilities = 2, spellIds = { 45357, 45358, 45359, 45360, 45361, 45363, 86008, 110417, 158748, 195115 }, skillLine = 773 }
 
 function LibAddonCompat:GetProfessionInfo(skillIndex)
 	local skillName, isHeader, isExpanded, skillRank, numTempPoints, skillModifier,
