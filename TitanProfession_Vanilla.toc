@@ -1,9 +1,9 @@
-## Interface: 90100
+## Interface: 11403
 ## Title: Titan Panel [|cffeda55fProfession|r]
 ## Notes: Titan Panel plugin that shows your Profession level.
 ## Author: Eliote
 ## Version: @project-version@
-## Dependencies: Titan
+## Dependencies: TitanClassic
 Locales.lua
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\LibAddonCompat-1.0\LibAddonCompat-1.0.xml
