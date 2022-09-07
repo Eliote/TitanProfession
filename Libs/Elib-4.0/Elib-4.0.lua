@@ -3,7 +3,7 @@
 	Author: Eliote
 --]]
 
-local MAJOR, MINOR = "Elib-4.0", 4
+local MAJOR, MINOR = "Elib-4.0", 10
 local Elib = LibStub:NewLibrary(MAJOR, MINOR)
 if not Elib then return end
 
@@ -13,6 +13,24 @@ local Titan_L = AceLocale:GetLocale(TITAN_ID, true)
 ---@type ElioteDropDownMenu
 local EDDM = LibStub("ElioteDropDownMenu-1.0")
 local menuFrame = EDDM.UIDropDownMenu_GetOrCreate("ElibDropDown")
+
+-- TBC Classic compatibility
+local CreateColorFromHexString = CreateColorFromHexString
+if not CreateColorFromHexString then
+	local function ExtractColorValueFromHex(str, index)
+		return tonumber(str:sub(index, index + 1), 16) / 255;
+	end
+
+	function CreateColorFromHexString(hexColor)
+		if #hexColor == 8 then
+			local a, r, g, b = ExtractColorValueFromHex(hexColor, 1), ExtractColorValueFromHex(hexColor, 3), ExtractColorValueFromHex(hexColor, 5), ExtractColorValueFromHex(hexColor, 7);
+			return CreateColor(r, g, b, a);
+		else
+			GMError("CreateColorFromHexString input must be hexadecimal digits in this format: AARRGGBB.");
+		end
+	end
+end
+
 
 local function createTitanOption(id, text, var)
 	return {

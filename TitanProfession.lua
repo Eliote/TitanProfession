@@ -9,15 +9,22 @@ local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 
 local Elib = LibStub("Elib-4.0")
 
-local PROFESSION_LEVEL_LIMIT = 800
-local PANDAREM_LIMIT = 600
-local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfessionClassic", "AceEvent-3.0")
+local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfession", "AceEvent-3.0")
 
-local Elib = LibStub("Elib-4.0")
 ---@type LibAddonCompat
 local LAC = LibStub("LibAddonCompat-1.0")
 
-local PROFESSION_LEVEL_LIMIT = 375
+local professionMaxLevel = {
+    [LE_EXPANSION_CLASSIC] = 300,
+    [LE_EXPANSION_BURNING_CRUSADE] = 375,
+    [LE_EXPANSION_WRATH_OF_THE_LICH_KING] = 450,
+    [LE_EXPANSION_CATACLYSM] = 525,
+    [LE_EXPANSION_MISTS_OF_PANDARIA] = 600,
+    [LE_EXPANSION_WARLORDS_OF_DRAENOR] = 700,
+    [LE_EXPANSION_LEGION] = 800,
+    [LE_EXPANSION_BATTLE_FOR_AZEROTH] = 975,
+    [LE_EXPANSION_SHADOWLANDS] = 1125,
+}
 
 local Color = {}
 Color.WHITE = "|cFFFFFFFF"
@@ -25,9 +32,13 @@ Color.RED = "|cFFDC2924"
 Color.YELLOW = "|cFFFFF244"
 Color.GREEN = "|cFF3DDC53"
 
+local function GetMaxLevel()
+	return professionMaxLevel[GetExpansionLevel() or LE_EXPANSION_SHADOWLANDS] or 1
+end
+
 local function CanLevelUp(profLvl, profMaxLvl)
 	if profMaxLvl == 0 then return end
-	if profMaxLvl == PROFESSION_LEVEL_LIMIT then return end
+	if profMaxLvl == GetMaxLevel() then return end
 
 	if profLvl > (profMaxLvl - 25) then return true end
 end
@@ -188,8 +199,11 @@ end
 function TitanProfession:OnInitialize()
 	TitanProf("TITAN_PROF_1", LAC.PROFESSION_FIRST_INDEX, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
 	TitanProf("TITAN_PROF_2", LAC.PROFESSION_SECOND_INDEX, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
-	TitanProf("TITAN_PROF_3", LAC.PROFESSIONS_ARCHAEOLOGY, 1, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- first aid
 	TitanProf("TITAN_PROF_4", LAC.PROFESSION_FISHING_INDEX, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
 	TitanProf("TITAN_PROF_5", LAC.PROFESSION_COOKING_INDEX, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
-	TitanProf("TITAN_PROF_6", LAC.PROFESSION_FIRST_AID_INDEX, 1, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID_MISSING or PROFESSIONS_FIRST_AID) -- first aid
+	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
+		TitanProf("TITAN_PROF_3", LAC.PROFESSIONS_ARCHAEOLOGY_INDEX, 1, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- archaeology
+	else
+		TitanProf("TITAN_PROF_6", LAC.PROFESSION_FIRST_AID_INDEX, 1, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID_MISSING or PROFESSIONS_FIRST_AID) -- first aid
+	end
 end

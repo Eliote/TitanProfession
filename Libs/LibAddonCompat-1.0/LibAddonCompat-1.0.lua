@@ -1,17 +1,29 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 12
+local MAJOR, MINOR = "LibAddonCompat-1.0", 13
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
 
-local GetNumSkillLines, GetSkillLineInfo = GetNumSkillLines, GetSkillLineInfo
-local FindSpellBookSlotBySpellID, GetSpellBookItemTexture = FindSpellBookSlotBySpellID, GetSpellBookItemTexture
-local PROFESSIONS_COOKING, PROFESSIONS_FIRST_AID, PROFESSIONS_FISHING = PROFESSIONS_COOKING, PROFESSIONS_FIRST_AID, PROFESSIONS_FISHING
-
 LibAddonCompat.PROFESSION_FIRST_INDEX = 1
 LibAddonCompat.PROFESSION_SECOND_INDEX = 2
+LibAddonCompat.PROFESSIONS_ARCHAEOLOGY_INDEX = 3
 LibAddonCompat.PROFESSION_FISHING_INDEX = 4
 LibAddonCompat.PROFESSION_COOKING_INDEX = 5
 LibAddonCompat.PROFESSION_FIRST_AID_INDEX = 6
+
+if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
+	function LibAddonCompat:GetProfessions()
+		return GetProfessions()
+	end
+	function LibAddonCompat:GetProfessionInfo(skillIndex)
+		return GetProfessionInfo(skillIndex)
+	end
+
+	return
+end
+
+local GetNumSkillLines, GetSkillLineInfo = GetNumSkillLines, GetSkillLineInfo
+local FindSpellBookSlotBySpellID, GetSpellBookItemTexture = FindSpellBookSlotBySpellID, GetSpellBookItemTexture
+local PROFESSIONS_COOKING, PROFESSIONS_FIRST_AID, PROFESSIONS_FISHING = PROFESSIONS_COOKING, PROFESSIONS_FIRST_AID, PROFESSIONS_FISHING
 
 local TEXTURE_COOKING = "133971"
 local TEXTURE_FIRST_AID = "135966"
