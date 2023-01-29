@@ -15,15 +15,15 @@ local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfession", "Ace
 local LAC = LibStub("LibAddonCompat-1.0")
 
 local professionMaxLevel = {
-    [LE_EXPANSION_CLASSIC] = 300,
-    [LE_EXPANSION_BURNING_CRUSADE] = 375,
-    [LE_EXPANSION_WRATH_OF_THE_LICH_KING] = 450,
-    [LE_EXPANSION_CATACLYSM] = 525,
-    [LE_EXPANSION_MISTS_OF_PANDARIA] = 600,
-    [LE_EXPANSION_WARLORDS_OF_DRAENOR] = 700,
-    [LE_EXPANSION_LEGION] = 800,
-    [LE_EXPANSION_BATTLE_FOR_AZEROTH] = 975,
-    [LE_EXPANSION_SHADOWLANDS] = 1125,
+	[LE_EXPANSION_CLASSIC] = 300,
+	[LE_EXPANSION_BURNING_CRUSADE] = 375,
+	[LE_EXPANSION_WRATH_OF_THE_LICH_KING] = 450,
+	[LE_EXPANSION_CATACLYSM] = 525,
+	[LE_EXPANSION_MISTS_OF_PANDARIA] = 600,
+	[LE_EXPANSION_WARLORDS_OF_DRAENOR] = 700,
+	[LE_EXPANSION_LEGION] = 800,
+	[LE_EXPANSION_BATTLE_FOR_AZEROTH] = 975,
+	[LE_EXPANSION_SHADOWLANDS] = 1125,
 }
 
 local Color = {}
@@ -37,10 +37,16 @@ local function GetMaxLevel()
 end
 
 local function CanLevelUp(profLvl, profMaxLvl)
-	if profMaxLvl == 0 then return end
-	if profMaxLvl == GetMaxLevel() then return end
+	if profMaxLvl == 0 then
+		return
+	end
+	if profMaxLvl == GetMaxLevel() then
+		return
+	end
 
-	if profLvl > (profMaxLvl - 25) then return true end
+	if profLvl > (profMaxLvl - 25) then
+		return true
+	end
 end
 
 local function GetProfLvlColor(profLvl, profMaxLvl)
@@ -77,10 +83,10 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 
 	local learn = false
 
-	local function SetVars(name, icon, level, maxLevel, offset, bonus)
+	local function SetVars(registry, name, icon, level, maxLevel, offset, bonus)
 		learn = name and true
 
-		if (startLevel == nil) then
+		if (startLevel == nil or startLevel == 0) then
 			startLevel = level
 		end
 
@@ -91,31 +97,28 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 		profMaxLevel = maxLevel or 0
 		profBonus = bonus or 0
 
-		TitanPlugins[ID].icon = profIcon
-		TitanPlugins[ID].tooltipTitle = profName
+		registry.icon = profIcon
+		registry.tooltipTitle = profName
 
 		if profMaxLevel > 0 then
 			if isPrimary then
-				TitanPlugins[ID].menuText = defaultDesc .. " [" .. Color.GREEN .. profName .. "|r]"
+				registry.menuText = defaultDesc .. " [" .. Color.GREEN .. profName .. "|r]"
 			else
-				TitanPlugins[ID].menuText = defaultDesc .. "|r"
+				registry.menuText = defaultDesc .. "|r"
 			end
 		else
-			TitanPlugins[ID].menuText = defaultDesc .. " [" .. Color.RED .. L["noprof"] .. "|r]"
+			registry.menuText = defaultDesc .. " [" .. Color.RED .. L["noprof"] .. "|r]"
 		end
-
-		TitanPanelButton_UpdateButton(ID)
 	end
 
-	local function ReloadProf()
-		-- ignore while TitanPlugins is not registered
-		if (TitanPlugins == nil) then return end
-
+	local function ReloadProf(self)
 		local prof = select(profIndex, LAC:GetProfessions())
-		if not prof then return SetVars() end
+		if not prof then
+			return SetVars(self.registry)
+		end
 
 		local name, icon, level, maxLevel, _, offset, _, skillModifier = LAC:GetProfessionInfo(prof)
-		SetVars(name, icon, level, maxLevel, offset, skillModifier)
+		SetVars(self.registry, name, icon, level, maxLevel, offset, skillModifier)
 	end
 
 	local function CreateToolTip()
@@ -150,7 +153,11 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 	end
 
 	local function GetButtonText(self, id)
-		if TitanGetVar(id, "HideNotLearned") and not learn then return end
+		ReloadProf(self)
+
+		if TitanGetVar(id, "HideNotLearned") and not learn then
+			return
+		end
 
 		if profMaxLevel == 0 then
 			return profName .. ": ", Color.RED .. defaultDesc
@@ -173,12 +180,16 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 		return profName .. ": ", GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText1 .. maxText .. session .. "|r"
 	end
 
-	local function OnClick(self, button)
+	local function OnClick(_, button)
 		if (button == "LeftButton") then
 			if profOffset and castSkill then
 				CastSpell(profOffset + castSkill, "Spell")
 			end
 		end
+	end
+
+	local function ReloadPlugin()
+		TitanPanelButton_UpdateButton(ID)
 	end
 
 	Elib.Register({
@@ -190,7 +201,13 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 		version = VERSION,
 		getButtonText = GetButtonText,
 		onClick = OnClick,
-		onUpdate = ReloadProf,
+		eventsTable = {
+			SKILL_LINES_CHANGED = ReloadPlugin,
+			PLAYER_ENTERING_WORLD = function(self)
+				ReloadProf(self)
+				ReloadPlugin()
+			end,
+		},
 		customTooltip = CreateToolTip,
 		menus = menus
 	})
