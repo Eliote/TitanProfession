@@ -5,6 +5,7 @@
 --]]
 
 local ADDON_NAME, L = ...;
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local VERSION = GetAddOnMetadata(ADDON_NAME, "Version")
 
 local Elib = LibStub("Elib-4.0")
