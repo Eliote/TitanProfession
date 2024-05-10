@@ -1,9 +1,10 @@
-## Interface: 11404
+## Interface: 11502
 ## Title: Titan Panel [|cffeda55fProfession|r]
 ## Notes: Titan Panel plugin that shows your Profession level.
 ## Author: Eliote
 ## Version: @project-version@
 ## Dependencies: TitanClassic
+## IconTexture: Interface\Spellbook\Spellbook-Icon
 
 ## X-Curse-Project-ID: 94529
 ## X-Wago-ID: XrNkAzKa
