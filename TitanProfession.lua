@@ -68,83 +68,84 @@ local menus = {
 	{ type = "rightSideToggle" }
 }
 
-local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
-	local ID = titanId
-
-	local profName = defaultDesc
-	local profIcon = ""
-	local profLevel = 0
-	local profMaxLevel = 0
-	local profBonus = 0
+local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 	local profOffset
-
+	local profNumAbilities = 0
 	local startLevel
 
-	local isPrimary = profIndex <= 2
+	local function UpdateVars(registry)
+		local prof = select(profIndex, LAC:GetProfessions())
+		local name, icon, level, maxLevel, numAbilities, offset, skillLine, skillModifier
+		if (prof) then
+			name, icon, level, maxLevel, numAbilities, offset, skillLine, skillModifier = LAC:GetProfessionInfo(prof)
+		end
+		if (registry) then
+			registry.icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+			registry.tooltipTitle = name or defaultDesc
 
-	local learn = false
-
-	local function SetVars(registry, name, icon, level, maxLevel, offset, bonus)
-		learn = name and true
-
-		if (startLevel == nil or startLevel == 0) then
-			startLevel = level
+			if name then
+				local isPrimary = profIndex <= 2
+				if isPrimary then
+					registry.menuText = defaultDesc .. " [" .. Color.GREEN .. name .. "|r]"
+				else
+					registry.menuText = defaultDesc .. "|r"
+				end
+			else
+				registry.menuText = defaultDesc .. " [" .. Color.RED .. L["noprof"] .. "|r]"
+			end
 		end
 
 		profOffset = offset
-		profIcon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
-		profName = name or defaultDesc
-		profLevel = level or 0
-		profMaxLevel = maxLevel or 0
-		profBonus = bonus or 0
+		profNumAbilities = numAbilities
 
-		registry.icon = profIcon
-		registry.tooltipTitle = profName
-
-		if profMaxLevel > 0 then
-			if isPrimary then
-				registry.menuText = defaultDesc .. " [" .. Color.GREEN .. profName .. "|r]"
-			else
-				registry.menuText = defaultDesc .. "|r"
-			end
-		else
-			registry.menuText = defaultDesc .. " [" .. Color.RED .. L["noprof"] .. "|r]"
+		if (startLevel == nil or startLevel == 0 or level ~= nil or level == 0) then
+			startLevel = level
 		end
+
+		return name, icon, level, maxLevel, numAbilities, offset, skillLine, skillModifier
 	end
 
-	local function ReloadProf(self)
-		local prof = select(profIndex, LAC:GetProfessions())
-		if not prof then
-			return SetVars(self.registry)
-		end
+	local function ReloadPlugin()
+		TitanPanelButton_UpdateButton(titanId)
+	end
 
-		local name, icon, level, maxLevel, _, offset, _, skillModifier = LAC:GetProfessionInfo(prof)
-		SetVars(self.registry, name, icon, level, maxLevel, offset, skillModifier)
+	local function GetProfSpell(offset, numAbilities)
+		if offset and numAbilities > 0 then
+			for i = 1, numAbilities do
+				local spell = offset + i
+				local name, _, _, castTime, minRange, maxRange = GetSpellInfo(spell, "Spell")
+				if (name and castTime == 0 and minRange == 0 and maxRange == 0) then
+					return spell
+				end
+			end
+		end
 	end
 
 	local function CreateToolTip()
-		GameTooltip:SetText(profName, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+		local name, _, level, maxLevel, numAbilities, offset, _, skillModifier = UpdateVars(nil)
 
-		if profMaxLevel > 0 then
-			if CanLevelUp(profLevel, profMaxLevel) then
+		GameTooltip:SetText(name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+
+		if maxLevel > 0 then
+			if CanLevelUp(level, maxLevel) then
 				GameTooltip:AddLine("|cFFFFFFFF" .. L["goTrainerHint"], nil, nil, nil, true);
 			end
 
-			if castSkill then
+			if GetProfSpell(offset, numAbilities) then
 				GameTooltip:AddLine("|cFFFFFFFF" .. L["tooltipHint"], nil, nil, nil, true);
 			end
 
 			GameTooltip:AddLine(" ");
 
 			local bonusText = ""
-			if (profBonus and profBonus > 0) then
-				bonusText = Color.GREEN .. "+" .. profBonus .. "|r(" .. Color.GREEN .. profBonus + profLevel .. "|r)"
+			if (skillModifier and skillModifier > 0) then
+				bonusText = Color.GREEN .. "+" .. skillModifier .. "|r(" .. Color.GREEN .. (skillModifier + level) .. "|r)"
 			end
 
-			GameTooltip:AddDoubleLine(L["tooltipLevel"], GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText);
-			GameTooltip:AddDoubleLine(L["tooltipMaxLevel"], Color.WHITE .. profMaxLevel);
+			GameTooltip:AddDoubleLine(L["tooltipLevel"], GetProfLvlColor(level, maxLevel) .. level .. bonusText);
+			GameTooltip:AddDoubleLine(L["tooltipMaxLevel"], Color.WHITE .. maxLevel);
 
-			local dif = profLevel - startLevel
+			local dif = level - startLevel
 			if dif > 0 then
 				GameTooltip:AddDoubleLine(L["thisSession"], Color.GREEN .. dif);
 			end
@@ -154,47 +155,43 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 	end
 
 	local function GetButtonText(self, id)
-		ReloadProf(self)
+		local name, _, level, maxLevel, _, _, _, skillModifier = UpdateVars(self.registry)
 
-		if TitanGetVar(id, "HideNotLearned") and not learn then
+		if TitanGetVar(id, "HideNotLearned") and not name then
 			return
 		end
 
-		if profMaxLevel == 0 then
-			return profName .. ": ", Color.RED .. defaultDesc
+		if maxLevel == 0 then
+			return name .. ": ", Color.RED .. defaultDesc
 		end
 
-		local bonusText1 = ""
-
-		if profBonus and profBonus > 0 then
-			bonusText1 = Color.GREEN .. "+" .. profBonus .. "|r(" .. Color.GREEN .. (profLevel + profBonus) .. "|r)"
+		local bonusText = ""
+		if skillModifier and skillModifier > 0 then
+			bonusText = Color.GREEN .. "+" .. skillModifier .. "|r(" .. Color.GREEN .. (skillModifier + level) .. "|r)"
 		end
 
-		local maxText = (TitanGetVar(id, "ShowMax") and ("|r/" .. Color.RED .. profMaxLevel)) or ""
+		local maxText = (TitanGetVar(id, "ShowMax") and ("|r/" .. Color.RED .. maxLevel)) or ""
 
 		local session = ""
-		local dif = profLevel - startLevel
+		local dif = level - startLevel
 		if dif > 0 then
 			session = Color.GREEN .. " [" .. dif .. Color.GREEN .. "]"
 		end
 
-		return profName .. ": ", GetProfLvlColor(profLevel, profMaxLevel) .. profLevel .. bonusText1 .. maxText .. session .. "|r"
+		return name .. ": ", GetProfLvlColor(level, maxLevel) .. level .. bonusText .. maxText .. session .. "|r"
 	end
 
 	local function OnClick(_, button)
 		if (button == "LeftButton") then
-			if profOffset and castSkill then
-				CastSpell(profOffset + castSkill, "Spell")
+			local spell = GetProfSpell(profOffset, profNumAbilities)
+			if spell then
+				CastSpell(spell, "Spell")
 			end
 		end
 	end
 
-	local function ReloadPlugin()
-		TitanPanelButton_UpdateButton(ID)
-	end
-
 	Elib.Register({
-		id = ID,
+		id = titanId,
 		name = defaultDesc .. "|r",
 		tooltip = L["noprof"],
 		icon = "Interface\\Icons\\INV_Misc_QuestionMark",
@@ -204,10 +201,7 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 		onClick = OnClick,
 		eventsTable = {
 			SKILL_LINES_CHANGED = ReloadPlugin,
-			PLAYER_ENTERING_WORLD = function(self)
-				ReloadProf(self)
-				ReloadPlugin()
-			end,
+			PLAYER_ENTERING_WORLD = ReloadPlugin,
 		},
 		customTooltip = CreateToolTip,
 		menus = menus
@@ -215,13 +209,14 @@ local function TitanProf(titanId, profIndex, castSkill, defaultDesc, noProfHint)
 end
 
 function TitanProfession:OnInitialize()
-	TitanProf("TITAN_PROF_1", LAC.PROFESSION_FIRST_INDEX, 1, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
-	TitanProf("TITAN_PROF_2", LAC.PROFESSION_SECOND_INDEX, 1, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
-	TitanProf("TITAN_PROF_4", LAC.PROFESSION_FISHING_INDEX, 1, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
-	TitanProf("TITAN_PROF_5", LAC.PROFESSION_COOKING_INDEX, 1, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
-	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
-		TitanProf("TITAN_PROF_3", LAC.PROFESSIONS_ARCHAEOLOGY_INDEX, 1, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- archaeology
-	else
-		TitanProf("TITAN_PROF_6", LAC.PROFESSION_FIRST_AID_INDEX, 1, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID_MISSING or PROFESSIONS_FIRST_AID) -- first aid
+	TitanProf("TITAN_PROF_1", LAC.PROFESSION_FIRST_INDEX, PROFESSIONS_FIRST_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof1
+	TitanProf("TITAN_PROF_2", LAC.PROFESSION_SECOND_INDEX, PROFESSIONS_SECOND_PROFESSION, PROFESSIONS_MISSING_PROFESSION) -- prof2
+	TitanProf("TITAN_PROF_4", LAC.PROFESSION_FISHING_INDEX, PROFESSIONS_FISHING, PROFESSIONS_FISHING_MISSING) -- fishing
+	TitanProf("TITAN_PROF_5", LAC.PROFESSION_COOKING_INDEX, PROFESSIONS_COOKING, PROFESSIONS_COOKING_MISSING) -- cooking
+	if (LE_EXPANSION_LEVEL_CURRENT >= LE_EXPANSION_CATACLYSM) then
+		TitanProf("TITAN_PROF_3", LAC.PROFESSIONS_ARCHAEOLOGY_INDEX, PROFESSIONS_ARCHAEOLOGY, PROFESSIONS_ARCHAEOLOGY_MISSING) -- archaeology
+	end
+	if (LE_EXPANSION_LEVEL_CURRENT < LE_EXPANSION_BATTLE_FOR_AZEROTH) then
+		TitanProf("TITAN_PROF_6", LAC.PROFESSION_FIRST_AID_INDEX, PROFESSIONS_FIRST_AID, PROFESSIONS_FIRST_AID_MISSING or PROFESSIONS_FIRST_AID) -- first aid
 	end
 end

@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 13
+local MAJOR, MINOR = "LibAddonCompat-1.0", 14
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -10,7 +10,7 @@ LibAddonCompat.PROFESSION_FISHING_INDEX = 4
 LibAddonCompat.PROFESSION_COOKING_INDEX = 5
 LibAddonCompat.PROFESSION_FIRST_AID_INDEX = 6
 
-if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
+if (LE_EXPANSION_LEVEL_CURRENT >= LE_EXPANSION_CATACLYSM) then
 	function LibAddonCompat:GetProfessions()
 		return GetProfessions()
 	end
