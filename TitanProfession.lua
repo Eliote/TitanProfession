@@ -83,6 +83,7 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 			registry.icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
 			registry.tooltipTitle = name or defaultDesc
 
+			-- Sets the title of the plugin the right-click menu, where you can show/hide titan plugins.
 			if name then
 				local isPrimary = profIndex <= 2
 				if isPrimary then
@@ -121,12 +122,12 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 		end
 	end
 
-	local function CreateToolTip()
-		local name, _, level, maxLevel, numAbilities, offset, _, skillModifier = UpdateVars(nil)
+	local function CreateToolTip(...)
+		local name, _, level, maxLevel, numAbilities, offset, _, skillModifier = UpdateVars()
 
-		GameTooltip:SetText(name, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+		GameTooltip:SetText(name or defaultDesc, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 
-		if maxLevel > 0 then
+		if maxLevel and maxLevel > 0 then
 			if CanLevelUp(level, maxLevel) then
 				GameTooltip:AddLine("|cFFFFFFFF" .. L["goTrainerHint"], nil, nil, nil, true);
 			end
@@ -157,12 +158,11 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 	local function GetButtonText(self, id)
 		local name, _, level, maxLevel, _, _, _, skillModifier = UpdateVars(self.registry)
 
-		if TitanGetVar(id, "HideNotLearned") and not name then
-			return
-		end
-
-		if maxLevel == 0 then
-			return name .. ": ", Color.RED .. defaultDesc
+		if not name then
+			if TitanGetVar(id, "HideNotLearned") then
+				return
+			end
+			return defaultDesc .. ": ", Color.RED .. L["noprof"]
 		end
 
 		local bonusText = ""
