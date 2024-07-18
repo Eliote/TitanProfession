@@ -15,6 +15,19 @@ local TitanProfession = LibStub("AceAddon-3.0"):NewAddon("TitanProfession", "Ace
 ---@type LibAddonCompat
 local LAC = LibStub("LibAddonCompat-1.0")
 
+local GetSpellInfo = function(spellIndex, book)
+	if (C_SpellBook and C_SpellBook.GetSpellBookItemType) then
+		local _, _, spellID = C_SpellBook.GetSpellBookItemType(spellIndex, Enum.SpellBookSpellBank.Player);
+		if not spellID then return end ;
+
+		local data = C_Spell.GetSpellInfo(spellID)
+		-- name, rank, icon, castTime, minRange, maxRange, spellID, originalIcon
+		return data.name, data.rank, data.iconID, data.castTime, data.minRange, data.maxRange, data.spellID, data.originalIcon
+	else
+		return GetSpellInfo(spellIndex, book)
+	end
+end
+
 local professionMaxLevel = {
 	[LE_EXPANSION_CLASSIC] = 300,
 	[LE_EXPANSION_BURNING_CRUSADE] = 375,
@@ -185,7 +198,11 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 		if (button == "LeftButton") then
 			local spell = GetProfSpell(profOffset, profNumAbilities)
 			if spell then
-				CastSpell(spell, "Spell")
+				if (C_SpellBook and C_SpellBook.CastSpellBookItem) then
+					C_SpellBook.CastSpellBookItem(spell, Enum.SpellBookSpellBank.Player)
+				else
+					CastSpell(spell, "Spell")
+				end
 			end
 		end
 	end
