@@ -135,8 +135,23 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 		end
 	end
 
+	local function GetChildInfo(id)
+		local result = {}
+		if not C_TradeSkillUI or not C_TradeSkillUI.GetAllProfessionTradeSkillLines then return result end
+
+		local skillLines = C_TradeSkillUI.GetAllProfessionTradeSkillLines()
+		for _, skillLine in ipairs(skillLines) do
+			local info = C_TradeSkillUI.GetProfessionInfoBySkillLineID(skillLine)
+			if (info and info.parentProfessionID == id) then
+				table.insert(result, info)
+			end
+		end
+
+		return result
+	end
+
 	local function CreateToolTip(...)
-		local name, _, level, maxLevel, numAbilities, offset, _, skillModifier = UpdateVars()
+		local name, _, level, maxLevel, numAbilities, offset, skillLine, skillModifier = UpdateVars()
 
 		GameTooltip:SetText(name or defaultDesc, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 
@@ -162,6 +177,19 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 			local dif = level - startLevel
 			if dif > 0 then
 				GameTooltip:AddDoubleLine(L["thisSession"], Color.GREEN .. dif);
+			end
+
+			local child = GetChildInfo(skillLine)
+			if child then
+				--print(skillLine, #child)
+				if next(child) then
+					GameTooltip:AddLine(" ");
+				end
+				for _, info in pairs(child) do
+					if (info.maxSkillLevel and info.maxSkillLevel > 0) then
+						GameTooltip:AddDoubleLine(info.professionName, GetProfLvlColor(level, maxLevel) .. info.skillLevel .. "|r/" .. info.maxSkillLevel);
+					end
+				end
 			end
 		else
 			GameTooltip:AddLine(noProfHint, nil, nil, nil, true);
