@@ -150,7 +150,8 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 		return result
 	end
 
-	local function CreateToolTip(...)
+	local function CreateToolTip(self, tooltip)
+		local GameTooltip = tooltip or _G.GameTooltip
 		local name, _, level, maxLevel, numAbilities, offset, skillLine, skillModifier = UpdateVars()
 
 		GameTooltip:SetText(name or defaultDesc, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
