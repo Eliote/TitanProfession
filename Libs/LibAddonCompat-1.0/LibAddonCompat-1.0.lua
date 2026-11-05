@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAddonCompat-1.0", 14
+local MAJOR, MINOR = "LibAddonCompat-1.0", 15
 ---@class LibAddonCompat
 local LibAddonCompat = LibStub:NewLibrary(MAJOR, MINOR)
 if not LibAddonCompat then return end
@@ -10,7 +10,14 @@ LibAddonCompat.PROFESSION_FISHING_INDEX = 4
 LibAddonCompat.PROFESSION_COOKING_INDEX = 5
 LibAddonCompat.PROFESSION_FIRST_AID_INDEX = 6
 
-if (LE_EXPANSION_LEVEL_CURRENT >= LE_EXPANSION_CATACLYSM) then
+local _, _, _, tocVersion = GetBuildInfo()
+local isCataOrAfter = LE_EXPANSION_LEVEL_CURRENT >= LE_EXPANSION_CATACLYSM
+local isWoWForever = LE_EXPANSION_LEVEL_CURRENT == 0 and tocVersion >= 16000
+
+if (isCataOrAfter or isWoWForever) then
+	-- in WoW forever, the first aid is returned in the archaeology index
+	LibAddonCompat.PROFESSION_FIRST_AID_INDEX = 3
+
 	function LibAddonCompat:GetProfessions()
 		return GetProfessions()
 	end
