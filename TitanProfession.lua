@@ -112,7 +112,7 @@ local function TitanProf(titanId, profIndex, defaultDesc, noProfHint)
 		profOffset = offset
 		profNumAbilities = numAbilities
 
-		if (startLevel == nil or startLevel == 0 or level ~= nil or level == 0) then
+		if (startLevel == nil or startLevel == 0 or level == nil or level == 0) then
 			startLevel = level
 		end
 
